@@ -25,16 +25,3 @@
         }
     }
 </script>
-        
-        <button class="btn btn-danger" @click="deleteQuestion">Supprimer</button>
-    </div>
-</template>
-
-<script>
-    export default {
-        props: {
-            question: Object,
-            required: true
-        }
-    }
-</script>

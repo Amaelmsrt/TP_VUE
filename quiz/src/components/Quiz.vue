@@ -1,5 +1,5 @@
 <script>
-import QuestionMultiple from './components/QuestionMultiple.vue'
+import QuestionMultiple from './QuestionMultiple.vue'
 
 export default {
     props: {
