@@ -1,4 +1,7 @@
 <script>
+
+import Quiz from './components/Quiz.vue'
+
 export default {
     data() {
         return {
@@ -22,21 +25,9 @@ export default {
 <div id="app" class="container">
     <h2>{{ title }}</h2>
     <ol>
-        <li v-for="q in quiz" :key="q.id">
-            <h3>{{ q.nom }}</h3>
-            <ol>
-                <li v-for="question in q.questions" :key="question.id">
-                    <h4>{{ question.question }}</h4>
-                    <ol>
-                        <li v-for="(reponse, index) in question.reponses" :key="index">
-                            <input type="radio" :name="question.id" :value="index" /> {{ reponse }}
-                        </li>
-                    </ol>
-                </li>
-            </ol>
+        <li v-for="q in quiz">
+            <Quiz :quiz="q"></Quiz>
         </li>
     </ol>
-
-    <AjoutTache :fonction="addTodo"/>
   </div>
 </template>
