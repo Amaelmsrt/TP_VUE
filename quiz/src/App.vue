@@ -1,33 +1,35 @@
-<script>
-
-import Quiz from './components/Quiz.vue'
-
-export default {
-    data() {
-        return {
-            quiz: [
-                {
-                    id: 1, nom: 'Quiz 1', questions: [
-                        { id: 1, question: 'Question 1', reponses: ['Réponse 1', 'Réponse 2', 'Réponse 3'], bonneReponse: 1 },
-                        { id: 2, question: 'Question 2', reponses: ['Réponse 1', 'Réponse 2', 'Réponse 3'], bonneReponse: 2 },
-                        { id: 3, question: 'Question 3', reponses: ['Réponse 1', 'Réponse 2', 'Réponse 3'], bonneReponse: 3 },
-                    ]
-                },
-
-            ],
-            title: 'Mes quiz'
-        }
-    }
-}
-</script>
-
 <template>
-<div id="app" class="container">
-    <h2>{{ title }}</h2>
-    <ol>
-        <li v-for="q in quiz">
-            <Quiz :quiz="q"></Quiz>
-        </li>
-    </ol>
+  <div id="app">
+    <h1>{{ title }}</h1>
+    <Quiz v-for="quiz in quizzes" :key="quiz.id" :quiz="quiz" />
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+import Quiz from './components/Quiz.vue';
+
+export default {
+  name: 'App',
+  components: {
+    Quiz
+  },
+  data() {
+    return {
+      title: 'Mes quiz',
+      quizzes: []
+    }
+  },
+  async created() {
+    const response = await axios.get('http://localhost:5000/quiz/api/v1.0/quiz');
+    this.quizzes = await Promise.all(response.data.questionnaires.map(async quiz => {
+      // const questionsResponse = await axios.get(`http://localhost:5000/quiz/api/v1.0/quiz/${quiz.id}/questions`);
+      // console.log(questionsResponse.data);
+      return {
+        ...quiz
+        // questions: questionsResponse.data.questions
+      };
+    }));
+  }
+}
+</script>
