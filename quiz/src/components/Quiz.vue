@@ -31,7 +31,6 @@ export default {
                 ...response.data
             }
         }));
-        console.log(this.questions[0].title);
     }
 }
 </script>
