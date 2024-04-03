@@ -21,7 +21,7 @@ def get_quiz_id(quiz_id):
 
 @app.route('/quiz/api/v1.0/quiz/<int:quiz_id>/questions/<int:question_id>', methods=["GET"])
 def get_quiz_question(quiz_id, question_id):
-    return jsonify(question=get_question(question_id))
+    return jsonify(get_question(question_id))
 
 @app.route('/quiz/api/v1.0/quiz', methods=["POST"])
 def add_quiz():

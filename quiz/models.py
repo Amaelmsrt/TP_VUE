@@ -43,7 +43,7 @@ class SimpleQuestion(Question):
             'id': self.id,
             'title': self.title,
             'reponse': self.reponse,
-            'questionType': self.question_type
+            'type': self.question_type
         }
 
 class MutipleQuestion(Question):
@@ -63,7 +63,7 @@ class MutipleQuestion(Question):
             'id': self.id,
             'title': self.title,
             'reponse': self.reponse,
-            'questionType': self.question_type,
+            'type': self.question_type,
             'proposition1': self.proposition1,
             'proposition2': self.proposition2
         }
