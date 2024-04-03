@@ -5,7 +5,7 @@
     </button>
     <ol v-if="showQuestions">
         <li v-for="question in questions" :key="question.id">
-            <Question :question="question"/>
+            <Question :question="question" :questionnaireId="quiz.id" @question-deleted="loadQuestions"/>
         </li>
     </ol>
 </template>

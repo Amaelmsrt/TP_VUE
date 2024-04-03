@@ -17,15 +17,24 @@
 </template>
   
   <script>
+  import axios from 'axios';
+
   export default {
     props: {
-      question: Object
+      question: Object,
+      questionnaireId: Number
     },
     methods: {
       deleteQuestion() {
-        // Logique pour supprimer la question
+        console.log(this.questionnaireId);
+        try {
+          axios.delete(`http://localhost:5000/quiz/api/v1.0/quiz/${this.questionnaireId}/questions/${this.question.question.id}`);
+          this.$emit('delete-question', this.question.question.id);
+        } catch (error) {
+          console.error(error);
+        }
       },
-      editQuestion() {
+      updateQuestion() {
         // Logique pour modifier la question
       }
     }
