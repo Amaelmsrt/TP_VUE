@@ -1,89 +1,89 @@
 <template>
-    <h2>{{ quiz.title }}</h2>
-    <button @click="loadQuestions">
-        {{ showQuestions ? 'Cacher les questions' : 'Voir les questions' }}
-    </button>
-    <button class="btn btn-primary" @click="addingQuestion = !addingQuestion">
-        {{ addingQuestion ? 'Annuler' : 'Ajouter une question' }}
-    </button>
-    <div v-if="addingQuestion">
-        <input v-model="newQuestionTitle" placeholder="Titre de la question">
-        <div>
-        <input type="radio" id="simple" value="simplequestion" v-model="newQuestionType">
-        <label for="simple">Question simple</label>
-        <input type="radio" id="multiple" value="multiplequestion" v-model="newQuestionType">
-        <label for="multiple">Question multiple</label>
+    <div class="card">
+        <div class="card-header bg-secondary">
+            <h2>{{ quiz.title }}</h2>
+            <button @click="del" class="btn btn-danger">Supprimer</button>
+            <button v-if="!showQuestions" @click="loadQuestionsAndShow" class="btn btn-primary">Déplier</button>
+            <button v-else @click="showQuestions = false" class="btn btn-primary">Replier</button>
+            <button v-if="!edit" @click="edit = true" class="btn btn-primary">Editer</button>
+            <button v-else @click="edit = false" class="btn btn-primary">Fermer</button>
+            <button v-if="!add" @click="add = true" class="btn btn-primary">Ajouter question</button>
         </div>
-        <div v-if="newQuestionType === 'simplequestion'">
-        <input v-model="newQuestionReponse" placeholder="Réponse à la question">
+
+        <div class="card-body" v-if="edit">
+            <input v-model="quiz.title" placeholder="Titre">
+            <button @click="updateQuiz" class="btn btn-success">Valider</button>
         </div>
-        <div v-else-if="newQuestionType === 'multiplequestion'">
-        <input v-model="newQuestionProposition1" placeholder="Proposition 1">
-        <input v-model="newQuestionProposition2" placeholder="Proposition 2">
-        <input v-model="newQuestionReponse" placeholder="Réponse à la question">
+
+        <div class="card-body" v-if="add">
+           <AddQuestion :quiz="quiz" @question-add="addQuestion"></AddQuestion>
         </div>
-        <button @click="addQuestion">Ajouter la question</button>
+
+        <div class="card-body" v-if="showQuestions">
+            <div v-for="question in questions" :key="question.id">
+                <Question :question="question" :questionnaireId="quiz.id" @question-deleted="delQuestion"/>
+            </div>
+        </div>
     </div>
-    <ol v-if="showQuestions">
-        <li v-for="question in questions" :key="question.id">
-            <Question :question="question" :questionnaireId="quiz.id" @question-deleted="loadQuestions"/>
-        </li>
-    </ol>
 </template>
 
 <script>
-import Question from './Question.vue'
-import axios from 'axios'
+import Question from './Question.vue';
+import AddQuestion from './AddQuestion.vue';
+import axios from 'axios';
 
-export default {
-    data() {
+export default{
+    data(){
         return {
             questions: [],
             showQuestions: false,
-            addingQuestion: false,
-            newQuestionTitle: '',
-            newQuestionType: '',
-            newQuestionReponse: '',
-            newQuestionProposition1: '',
-            newQuestionProposition2: ''
+            edit: false,
+            add: false,
         }
     },
     props: {
         quiz: Object
     },
     components: {
-        Question
+        Question,
+        AddQuestion
     },
     methods: {
-        async loadQuestions() {
-            if (!this.showQuestions) {
-                const response = await axios.get(`http://localhost:5000/quiz/api/v1.0/quiz/${this.quiz.id}/questions`);
-                this.questions = await Promise.all(response.data.questions.map(async question => {
-                    const response = await axios.get(`http://localhost:5000/${question}`);
-                    return {
-                        ...response.data
-                    }
-                }));
-            }
-            this.showQuestions = !this.showQuestions;
+        async loadQuestions(){
+            const response = await axios.get(`http://localhost:5000/quiz/api/v1.0/quiz/${this.quiz.id}/questions`);
+            this.questions = await Promise.all(response.data.questions.map(async question => {
+                const response = await axios.get(`http://localhost:5000/${question}`);
+                return {
+                    ...response.data
+                }
+            }));
         },
-        async addQuestion() {
-            this.showQuestions = false;
-            const questionData = {
-                title: this.newQuestionTitle,
-                type: this.newQuestionType,
-                reponse: this.newQuestionReponse,
-                proposition1: this.newQuestionProposition1,
-                proposition2: this.newQuestionProposition2
-            };
-            const response = await axios.post(`http://localhost:5000/quiz/api/v1.0/quiz/${this.quiz.id}/questions`, questionData);
-            this.questions.push(response.data);
-            this.addingQuestion = false;
-            this.newQuestionTitle = '';
-            this.newQuestionType = '';
-            this.newQuestionReponse = '';
-            this.newQuestionProposition1 = '';
-            this.newQuestionProposition2 = '';
+        async loadQuestionsAndShow(){
+            await this.loadQuestions();
+            this.showQuestions = true;
+        },
+        
+        async del(){
+            await axios.delete(`http://localhost:5000/quiz/api/v1.0/quiz/${this.quiz.id}`);
+            this.$emit('quiz-deleted', this.quiz.id);
+        },
+        async updateQuiz(){
+            await axios.put(`http://localhost:5000/quiz/api/v1.0/quiz/${this.quiz.id}`, this.quiz);
+            this.edit = false;
+        },
+        // supprime de la liste des questions chargées
+        delQuestion(id){
+            for(let i = 0; i < this.questions.length; i++){
+                if(this.questions[i].id === id){
+                    this.questions.splice(i, 1);
+                    break;
+                }
+            }
+        },
+        // ajoute une question à la liste des questions chargées
+        addQuestion(question){
+            this.questions.push(question);
+            this.add = false;
         }
     }
 }

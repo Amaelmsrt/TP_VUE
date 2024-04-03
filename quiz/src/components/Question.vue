@@ -1,70 +1,58 @@
 <template>
-  <div class="question">
-    <div class="titre-btn">
-      <p>{{ question.question.title }}</p>
-      <button class="btn btn-success" @click="editQuestion">Modifier</button>
-      <button class="btn btn-danger" @click="deleteQuestion">Supprimer</button>
-    </div>
-    <div v-if="question.question.questionType === 'simplequestion'">
-      <p>Réponse : {{ question.question.reponse }}</p>
-    </div>
-    <div v-else-if="question.question.questionType === 'multiplequestion'">
-      <p>Proposition 1 : {{ question.question.proposition1 }}</p>
-      <p>Proposition 2 :{{ question.question.proposition2 }}</p>
-      <p>Réponse : {{ question.question.reponse }}</p>
-    </div>
-    <div v-if="addingQuestion">
-      <input v-model="newQuestionTitle" placeholder="Titre de la question">
-      <div>
-        <input type="radio" id="simple" value="simplequestion" v-model="newQuestionType">
-        <label for="simple">Question simple</label>
-        <input type="radio" id="multiple" value="multiplequestion" v-model="newQuestionType">
-        <label for="multiple">Question multiple</label>
+   <div class="card">
+      <div class="card-header">
+         <h2>{{ question.title }}</h2>
+         <button @click="deleteQuestion" class="btn btn-danger">Supprimer</button>
+         <button v-if="!edit" @click="edit = true" class="btn btn-primary">Editer</button>
+         <button v-else @click="edit = false" class="btn btn-primary">Fermer</button>
       </div>
-      <div v-if="newQuestionType === 'simplequestion'">
-        <input v-model="newQuestionReponse" placeholder="Réponse à la question">
+      <div class="card-body">
+         <div v-if="edit">
+            <input v-model="question.title" placeholder="Titre">
+            <input v-model="question.reponse" placeholder="Reponse">
+            <input v-if="question.type === 'multiplequestion'" v-model="question.proposition1" placeholder="Proposition 1">
+            <input v-if="question.type === 'multiplequestion'" v-model="question.proposition2" placeholder="Proposition 2">
+            <button @click="updateQuestion" class="btn btn-success">Valider</button>
+         </div>
+         <div v-else>
+            <p>Reponse: {{ question.reponse }}</p>
+            <p v-if="question.type === 'multiplequestion'">Proposition 1: {{ question.proposition1 }}</p>
+            <p v-if="question.type === 'multiplequestion'">Proposition 2: {{ question.proposition2 }}</p>
+         </div>
       </div>
-      <div v-else-if="newQuestionType === 'multiplequestion'">
-        <input v-model="newQuestionProposition1" placeholder="Proposition 1">
-        <input v-model="newQuestionProposition2" placeholder="Proposition 2">
-        <input v-model="newQuestionReponse" placeholder="Réponse à la question">
-      </div>
-      <button @click="addQuestion">Ajouter la question</button>
-    </div>
-  </div>
+   </div>
 </template>
-  
-  <script>
-  import axios from 'axios';
+<script>
 
-  export default {
-    props: {
+import axios from 'axios';
+
+export default{
+   data(){
+      return {
+         edit: false
+      }
+   },
+   props: {
       question: Object,
       questionnaireId: Number
-    },
-    methods: {
-      deleteQuestion() {
-        try {
-          axios.delete(`http://localhost:5000/quiz/api/v1.0/quiz/${this.questionnaireId}/questions/${this.question.question.id}`);
-          this.$emit('delete-question', this.question.question.id);
-        } catch (error) {
-          console.error(error);
-        }
+   },
+   methods: {
+      async deleteQuestion(){
+         try{
+            await axios.delete(`http://localhost:5000/quiz/api/v1.0/quiz/${this.questionnaireId}/questions/${this.question.id}`);
+            this.$emit('question-deleted', this.question.id);
+         }catch(error){
+            console.error(error);
+         }
       },
-      updateQuestion() {
-        // Logique pour modifier la question
-      }
-    }
-  }
-  </script>
-
-<style>
-  .titre-btn {
-    display: flex;
-  }
-
-  button {
-    margin-left: 10px;
-    font-size: 1rem;
-  }
-</style>
+      async updateQuestion(){
+         try{
+            await axios.put(`http://localhost:5000/quiz/api/v1.0/quiz/${this.questionnaireId}/questions/${this.question.id}`, this.question);
+            this.edit = false;
+         }catch(error){
+            console.error(error);
+         }
+      },
+   }
+}
+</script>
