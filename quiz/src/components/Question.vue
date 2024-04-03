@@ -13,6 +13,24 @@
       <p>Proposition 2 :{{ question.question.proposition2 }}</p>
       <p>Réponse : {{ question.question.reponse }}</p>
     </div>
+    <div v-if="addingQuestion">
+      <input v-model="newQuestionTitle" placeholder="Titre de la question">
+      <div>
+        <input type="radio" id="simple" value="simplequestion" v-model="newQuestionType">
+        <label for="simple">Question simple</label>
+        <input type="radio" id="multiple" value="multiplequestion" v-model="newQuestionType">
+        <label for="multiple">Question multiple</label>
+      </div>
+      <div v-if="newQuestionType === 'simplequestion'">
+        <input v-model="newQuestionReponse" placeholder="Réponse à la question">
+      </div>
+      <div v-else-if="newQuestionType === 'multiplequestion'">
+        <input v-model="newQuestionProposition1" placeholder="Proposition 1">
+        <input v-model="newQuestionProposition2" placeholder="Proposition 2">
+        <input v-model="newQuestionReponse" placeholder="Réponse à la question">
+      </div>
+      <button @click="addQuestion">Ajouter la question</button>
+    </div>
   </div>
 </template>
   
@@ -26,7 +44,6 @@
     },
     methods: {
       deleteQuestion() {
-        console.log(this.questionnaireId);
         try {
           axios.delete(`http://localhost:5000/quiz/api/v1.0/quiz/${this.questionnaireId}/questions/${this.question.question.id}`);
           this.$emit('delete-question', this.question.question.id);
