@@ -1,16 +1,18 @@
 <template>
   <div class="question">
-    <p>{{ question.question.title }}</p>
+    <div class="titre-btn">
+      <p>{{ question.question.title }}</p>
+      <button class="btn btn-success" @click="editQuestion">Modifier</button>
+      <button class="btn btn-danger" @click="deleteQuestion">Supprimer</button>
+    </div>
     <div v-if="question.question.questionType === 'simplequestion'">
-      <p>{{ question.question.reponse }}</p>
+      <p>Réponse : {{ question.question.reponse }}</p>
     </div>
     <div v-else-if="question.question.questionType === 'multiplequestion'">
-      <p>{{ question.question.proposition1 }}</p>
-      <p>{{ question.question.proposition2 }}</p>
-      <p>{{ question.question.reponse }}</p>
+      <p>Proposition 1 : {{ question.question.proposition1 }}</p>
+      <p>Proposition 2 :{{ question.question.proposition2 }}</p>
+      <p>Réponse : {{ question.question.reponse }}</p>
     </div>
-    <button class="btn btn-danger" @click="deleteQuestion">Supprimer</button>
-    <button class="btn btn-primary" @click="editQuestion">Modifier</button>
   </div>
 </template>
   
@@ -29,3 +31,14 @@
     }
   }
   </script>
+
+<style>
+  .titre-btn {
+    display: flex;
+  }
+
+  button {
+    margin-left: 10px;
+    font-size: 1rem;
+  }
+</style>

@@ -23,11 +23,8 @@ export default {
   async created() {
     const response = await axios.get('http://localhost:5000/quiz/api/v1.0/quiz');
     this.quizzes = await Promise.all(response.data.questionnaires.map(async quiz => {
-      // const questionsResponse = await axios.get(`http://localhost:5000/quiz/api/v1.0/quiz/${quiz.id}/questions`);
-      // console.log(questionsResponse.data);
       return {
         ...quiz
-        // questions: questionsResponse.data.questions
       };
     }));
   }
