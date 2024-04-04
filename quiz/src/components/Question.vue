@@ -27,6 +27,7 @@
 import axios from 'axios';
 
 export default{
+   emits: ['question-deleted'],
    data(){
       return {
          edit: false

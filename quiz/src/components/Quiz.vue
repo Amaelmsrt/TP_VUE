@@ -41,6 +41,7 @@ export default{
             add: false,
         }
     },
+    emits: ['quiz-deleted'],
     props: {
         quiz: Object
     },

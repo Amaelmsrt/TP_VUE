@@ -15,6 +15,7 @@
 import axios from 'axios'
 
 export default{
+    emits: ['question-add'],
     data(){
         return {
             newQuestion: {
