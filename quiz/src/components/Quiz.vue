@@ -34,6 +34,7 @@ import AddQuestion from './AddQuestion.vue';
 import axios from 'axios';
 
 export default{
+    name: "Quiz",
     data(){
         return {
             questions: [],
