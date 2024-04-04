@@ -19,7 +19,7 @@ export default{
         return {
             newQuestion: {
                 title: '',
-                type: '',
+                type: 'simplequestion',
                 reponse: '',
                 proposition1: '',
                 proposition2: ''
