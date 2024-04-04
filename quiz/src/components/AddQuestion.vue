@@ -8,7 +8,6 @@
     <input v-if="newQuestion.type === 'multiplequestion'" v-model="newQuestion.proposition1" placeholder="Proposition 1">
     <input v-if="newQuestion.type === 'multiplequestion'" v-model="newQuestion.proposition2" placeholder="Proposition 2">
     <button @click="addQuestion" class="btn btn-success">Valider</button>
-    <button @click="add = false" class="btn btn-primary">Annuler</button>
 </template>
 
 <script>

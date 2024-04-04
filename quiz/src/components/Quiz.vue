@@ -8,6 +8,7 @@
             <button v-if="!edit" @click="edit = true" class="btn btn-primary">Editer</button>
             <button v-else @click="edit = false" class="btn btn-primary">Fermer</button>
             <button v-if="!add" @click="add = true" class="btn btn-primary">Ajouter question</button>
+            <button v-else @click="add = false" class="btn btn-primary">Fermer ajout question</button>
         </div>
 
         <div class="card-body" v-if="edit">
